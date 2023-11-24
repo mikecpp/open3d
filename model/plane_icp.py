@@ -7,11 +7,7 @@ paths = [
     "20231123_13_29_05_PCL,ply", "20231123_13_29_16_PCL.ply", 
     "20231123_13_29_26_PCL.ply", "20231123_13_29_35_PCL.ply", "20231123_13_29_46_PCL.ply",    
     "20231123_13_27_00_PCL.ply", "20231123_13_27_18_PCL.ply", "20231123_13_27_32_PCL.ply", 
-    "20231123_13_27_46_PCL.ply", "20231123_13_28_04_PCL.ply", "20231123_13_28_41_PCL,ply",
-#   "20231123_13_28_53_PCL.ply", "20231123_13_29_05_PCL,ply", "20231123_13_29_16_PCL.ply",
-
-#   "20231123_13_28_41_PCL,ply", "20231123_13_29_05_PCL,ply", "20231123_13_29_16_PCL.ply",
-#   "20231123_13_29_26_PCL.ply", "20231123_13_29_35_PCL.ply", "20231123_13_29_46_PCL.ply"
+    "20231123_13_27_46_PCL.ply", "20231123_13_28_04_PCL.ply", "20231123_13_28_41_PCL.ply",
 ]
 
 def load_point_clouds(voxel_size=0.0):
@@ -23,14 +19,16 @@ def load_point_clouds(voxel_size=0.0):
     return pcds
 
 def pairwise_registration(source, target):
+    source.estimate_normals()
+    target.estimate_normals()
     icp_coarse = o3d.pipelines.registration.registration_icp(
         source, target, max_correspondence_distance_coarse, np.identity(4),
-        o3d.pipelines.registration.TransformationEstimationPointToPoint())
+        o3d.pipelines.registration.TransformationEstimationPointToPlane())
 
     icp_fine = o3d.pipelines.registration.registration_icp(
         source, target, max_correspondence_distance_fine,
         icp_coarse.transformation,
-        o3d.pipelines.registration.TransformationEstimationPointToPoint())
+        o3d.pipelines.registration.TransformationEstimationPointToPlane())
 
     transformation_icp = icp_fine.transformation
     information_icp = o3d.pipelines.registration.get_information_matrix_from_point_clouds(
@@ -70,7 +68,7 @@ def full_registration(pcds, max_correspondence_distance_coarse,
                                                              uncertain=True))
     return pose_graph
 
-voxel_size = 0.005
+voxel_size = 0.01
 pcds_down = load_point_clouds(voxel_size)
 
 max_correspondence_distance_coarse = voxel_size * 15
@@ -86,8 +84,8 @@ for point_id in range(len(pcds_down)):
     pcds_down[point_id].transform(pose_graph.nodes[point_id].pose)
     pcd_combined += pcds_down[point_id]
 
-o3d.io.write_point_cloud("final.ply", pcd_combined, write_ascii=True)
-
 # o3d.visualization.draw_geometries([pcd_combined])
 pcd, ind = pcd_combined.remove_statistical_outlier(nb_neighbors=40, std_ratio=2.0)
-o3d.visualization.draw_geometries([pcd])
+
+o3d.io.write_point_cloud("plane-final.ply", pcd, write_ascii=True)
+o3d.visualization.draw([pcd])
