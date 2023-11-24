@@ -38,21 +38,18 @@ def pairwise_registration(source, target):
     return transformation_icp, information_icp
 
 
-def full_registration(pcds, max_correspondence_distance_coarse,
-                      max_correspondence_distance_fine):
+def full_registration(pcds, max_correspondence_distance_coarse, max_correspondence_distance_fine):
     pose_graph = o3d.pipelines.registration.PoseGraph()
     odometry = np.identity(4)
     pose_graph.nodes.append(o3d.pipelines.registration.PoseGraphNode(odometry))
     n_pcds = len(pcds)
     for source_id in range(n_pcds):
         for target_id in range(source_id + 1, n_pcds):
-            transformation_icp, information_icp = pairwise_registration(
-                pcds[source_id], pcds[target_id])
+            transformation_icp, information_icp = pairwise_registration(pcds[source_id], pcds[target_id])
             if target_id == source_id + 1:  # odometry case
                 odometry = np.dot(transformation_icp, odometry)
                 pose_graph.nodes.append(
-                    o3d.pipelines.registration.PoseGraphNode(
-                        np.linalg.inv(odometry)))
+                    o3d.pipelines.registration.PoseGraphNode(np.linalg.inv(odometry)))
                 pose_graph.edges.append(
                     o3d.pipelines.registration.PoseGraphEdge(source_id,
                                                              target_id,
@@ -87,5 +84,5 @@ for point_id in range(len(pcds_down)):
 # o3d.visualization.draw_geometries([pcd_combined])
 pcd, ind = pcd_combined.remove_statistical_outlier(nb_neighbors=40, std_ratio=2.0)
 
-o3d.io.write_point_cloud("plane-final.ply", pcd, write_ascii=True)
+o3d.io.write_point_cloud("plane_final.ply", pcd, write_ascii=True)
 o3d.visualization.draw([pcd])
