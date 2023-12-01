@@ -9,7 +9,7 @@ radius = 0.1
 max_nn = 30  
 pcd.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(radius, max_nn))
 
-alpha = 0.03
+alpha = 0.01
 mesh = o3d.geometry.TriangleMesh.create_from_point_cloud_alpha_shape(pcd, alpha)
 mesh.compute_vertex_normals()
 

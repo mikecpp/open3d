@@ -65,7 +65,7 @@ def full_registration(pcds, max_correspondence_distance_coarse, max_corresponden
                                                              uncertain=True))
     return pose_graph
 
-voxel_size = 0.01
+voxel_size = 0.005
 pcds_down = load_point_clouds(voxel_size)
 
 max_correspondence_distance_coarse = voxel_size * 15
