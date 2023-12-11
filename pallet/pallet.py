@@ -7,7 +7,7 @@ VOXEL_SIZE =  0.02
 
 # Load PLY files
 pcd = o3d.io.read_point_cloud("pallet_01.ply") 
-o3d.visualization.draw([pcd])
+o3d.visualization.draw_geometries([pcd])
 
 # Down sample and filter 
 pcd = pcd.voxel_down_sample(voxel_size=VOXEL_SIZE)
@@ -27,5 +27,5 @@ pcd.points = o3d.utility.Vector3dVector(points[points[:, 1] >= THRESHOLD])
 # aabb.color = (1, 0, 0)
 
 # Show final point cloud 
-o3d.visualization.draw([pcd])
+o3d.visualization.draw_geometries([pcd])
 # o3d.visualization.draw([pcd])
