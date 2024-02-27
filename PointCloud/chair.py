@@ -1,9 +1,13 @@
 import open3d as o3d
 import numpy as np
 
-demo_crop_data = o3d.data.DemoCropPointCloud()
-pcd = o3d.io.read_point_cloud(demo_crop_data.point_cloud_path)
-vol = o3d.visualization.read_selection_polygon_volume(demo_crop_data.cropped_json_path)
-chair = vol.crop_point_cloud(pcd)
+# chair = o3d.io.read_point_cloud("chair.pcd") 
+# o3d.io.write_point_cloud("chair.pcd", chair, write_ascii=True) 
+chair = o3d.io.read_point_cloud("20240226_15_10_38_PCL.ply")
 
-o3d.visualization.draw_geometries([chair])
+bbox = chair.get_axis_aligned_bounding_box() 
+bbox.color = (1, 0, 0) 
+
+print("offset:", bbox.max_bound - bbox.min_bound) 
+
+o3d.visualization.draw_geometries([chair, bbox]) 
