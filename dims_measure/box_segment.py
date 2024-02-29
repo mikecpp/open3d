@@ -11,7 +11,7 @@ pcd = o3d.io.read_point_cloud("box.ply")
 ### Down sample with voxel size 1mm 
 pcd = pcd.voxel_down_sample(voxel_size = VOXEL_SIZE)
 pcd, ind = pcd.remove_statistical_outlier(nb_neighbors=40, std_ratio=2.0) 
-o3d.visualization.draw_geometries([pcd]) 
+# o3d.visualization.draw_geometries([pcd]) 
 
 ### Remove the non-Table objects 
 points = np.asarray(pcd.points) 
@@ -43,8 +43,16 @@ box_pcd.paint_uniform_color([0, 0, 1.0])
 
 ### Get box bounding box as box length, width & height 
 bbox = box_pcd.get_axis_aligned_bounding_box() 
-bbox.color = (0, 1, 0) 
-bound = bbox.max_bound - bbox.min_bound
+# bbox = box_pcd.get_oriented_bounding_box() 
+bbox.color = (1, 0, 0) 
+bound = bbox.get_max_bound() - bbox.get_min_bound()
+
+### Change bbox to mesh 
+# mesh_box = o3d.geometry.TriangleMesh.create_from_point_cloud_alpha_shape(box_pcd, 0.03)
+
+# pcd = mesh_box.sample_points_uniformly(number_of_points=30000) 
+# pcd.paint_uniform_color([1.0, 0, 0])
+# o3d.visualization.draw([pcd, mesh_box, bbox]) 
 
 msg = f"W: {bound[0]*1000:.0f}mm, L: {bound[1]*1000:.0f}mm, H: {bound[2]*1000:.0f}mm"
 print(msg)
@@ -56,3 +64,4 @@ o3d.visualization.draw_geometries([pcd, bbox, pcd_text],
                                   front  = [ 0.23, -0.23, 0.95 ],
                                   lookat = [ 4.20e-05, -0.00, -1.54 ],
                                   up     = [ -0.95, 0.16, 0.27 ])
+                                
