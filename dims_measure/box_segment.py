@@ -11,11 +11,12 @@ pcd = o3d.io.read_point_cloud("box.ply")
 ### Down sample with voxel size 1mm 
 pcd = pcd.voxel_down_sample(voxel_size = VOXEL_SIZE)
 pcd, ind = pcd.remove_statistical_outlier(nb_neighbors=40, std_ratio=2.0) 
+o3d.visualization.draw_geometries([pcd]) 
 
 ### Remove the non-Table objects 
 points = np.asarray(pcd.points) 
 points = points[points[:, 0] <=  0.30]
-points = points[points[:, 0] >= -0.30]
+points = points[points[:, 0] >= -0.30] 
 pcd.points = o3d.utility.Vector3dVector(points)
 # o3d.visualization.draw_geometries([pcd]) 
 
@@ -50,4 +51,8 @@ print(msg)
 
 pcd_text = text_3d(msg, pos=bbox.get_box_points()[6], font_size=15)
 
-o3d.visualization.draw_geometries([pcd, bbox, pcd_text]) 
+o3d.visualization.draw_geometries([pcd, bbox, pcd_text],
+                                  zoom = 0.20,
+                                  front  = [ 0.23, -0.23, 0.95 ],
+                                  lookat = [ 4.20e-05, -0.00, -1.54 ],
+                                  up     = [ -0.95, 0.16, 0.27 ])
