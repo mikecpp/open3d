@@ -48,19 +48,22 @@ bbox.color = (1, 0, 0)
 bound = bbox.get_max_bound() - bbox.get_min_bound()
 
 ### Change bbox to mesh 
-# mesh_box = o3d.geometry.TriangleMesh.create_from_point_cloud_alpha_shape(box_pcd, 0.03)
+mesh_box = o3d.geometry.TriangleMesh.create_box(width = bound[0], height = bound[1], depth = bound[2]) 
+mesh_box.compute_vertex_normals()
+mesh_box.translate(bbox.get_box_points()[0]) 
+mesh_box.paint_uniform_color([0, 0, 1])
 
 # pcd = mesh_box.sample_points_uniformly(number_of_points=30000) 
 # pcd.paint_uniform_color([1.0, 0, 0])
-# o3d.visualization.draw([pcd, mesh_box, bbox]) 
+# o3d.visualization.draw_geometries([table_pcd, mesh_box, bbox]) 
 
 msg = f"W: {bound[0]*1000:.0f}mm, L: {bound[1]*1000:.0f}mm, H: {bound[2]*1000:.0f}mm"
 print(msg)
 
 pcd_text = text_3d(msg, pos=bbox.get_box_points()[6], font_size=15)
 
-o3d.visualization.draw_geometries([pcd, bbox, pcd_text],
-                                  zoom = 0.20,
+o3d.visualization.draw_geometries([table_pcd, mesh_box, bbox, pcd_text],
+                                  zoom = 0.50,
                                   front  = [ 0.23, -0.23, 0.95 ],
                                   lookat = [ 4.20e-05, -0.00, -1.54 ],
                                   up     = [ -0.95, 0.16, 0.27 ])
