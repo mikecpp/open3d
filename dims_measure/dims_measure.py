@@ -1,4 +1,3 @@
-import sys
 import open3d as o3d
 import numpy as np
 
@@ -20,5 +19,5 @@ bbox = box.get_axis_aligned_bounding_box()
 bbox.color = (1, 0, 0) 
 
 print("offset:", bbox.max_bound - bbox.min_bound) 
-o3d.visualization.draw_geometries([pcd, bbox]) 
-o3d.visualization.draw_geometries([box, bbox]) 
+# o3d.visualization.draw_geometries([pcd, bbox]) 
+# o3d.visualization.draw_geometries([box, bbox]) 
