@@ -1,7 +1,7 @@
 import open3d as o3d
 import numpy as np
 
-VOXEL_SIZE     = 0.001 
+VOXEL_SIZE     = 0.001
 NB_NEIGHBORS   = 40
 STD_RATIO      = 2.0
 
@@ -17,21 +17,20 @@ BOX_DISTANCE   = 0.015
 def ply_to_boxsize(filename): 
     pcd = o3d.io.read_point_cloud(filename) 
 
-    ### Down sample with voxel size 1mm 
-    pcd = pcd.voxel_down_sample(voxel_size = VOXEL_SIZE) 
-    pcd, ind = pcd.remove_statistical_outlier(nb_neighbors = NB_NEIGHBORS, std_ratio = STD_RATIO) 
-
     ### Remove the non-Table objects 
     points = np.asarray(pcd.points) 
     points = points[points[:, 0] <=  TABLE_RIGHT] 
     points = points[points[:, 0] >=  TABLE_LEFT] 
     pcd.points = o3d.utility.Vector3dVector(points) 
 
+    ### Down sample with voxel size 1mm 
+    pcd = pcd.voxel_down_sample(voxel_size = VOXEL_SIZE) 
+    pcd, ind = pcd.remove_statistical_outlier(nb_neighbors = NB_NEIGHBORS, std_ratio = STD_RATIO) 
+
     ### Get table top plane 
     plane_model, inliers = pcd.segment_plane(distance_threshold = TABLE_DISTANCE, ransac_n = RANSAC_N, num_iterations = NUM_ITERS)
     [a, b, c, d1] = plane_model
     pcd_table = pcd.select_by_index(inliers)
-    pcd_table.paint_uniform_color([1.0, 0, 0]) 
     other_pcd = pcd.select_by_index(inliers, invert=True)
 
     ### Get box top plane 
@@ -46,7 +45,6 @@ def ply_to_boxsize(filename):
     points = np.asarray(pcd_box.points) 
     points[-100, 2] -= (depth - .005)
     pcd_box.points = o3d.utility.Vector3dVector(points)
-    pcd_box.paint_uniform_color([0, 0, 1.0]) 
 
     ### Get box bounding box as box length, width & height 
     bbox_box = pcd_box.get_axis_aligned_bounding_box() 
@@ -56,10 +54,4 @@ def ply_to_boxsize(filename):
     length = bound_box[1] * 1000 
     height = bound_box[2] * 1000 
 
-    return (width, length, height)
-
-if __name__ == '__main__':
-    (width, length, depth) = ply_to_boxsize("field.ply")
-    print(f"Width:  {width:.0f}mm")
-    print(f"Length: {length:.0f}mm")
-    print(f"Depth:  {depth:.0f}mm")
+    return (width, length, height, bbox_box)
