@@ -19,9 +19,13 @@ def measure(filename, draw = False):
         bbox.color = (1, 0, 0)
         o3d.visualization.draw_geometries([pcd, bbox]) 
 
+measure(sys.argv[1], True)
+
+'''
 for i in range(10):
     time_start = time.time() 
     measure(sys.argv[1])
     time_end = time.time()
     print(f"time elapse: {(time_end - time_start)*1000:.0f} ms")
     print("-----------------------------------------------")
+'''
