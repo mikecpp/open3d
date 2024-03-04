@@ -14,3 +14,5 @@ for i in range(10):
     measure(sys.argv[1])
     time_end = time.time()
     print(f"time elapse: {(time_end - time_start)*1000:.0f} ms")
+    print("-----------------------------------------------")
+    
