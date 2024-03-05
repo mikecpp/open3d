@@ -1,6 +1,5 @@
 import open3d as o3d
 import numpy as np
-# from text_3d import text_3d
 import time
 
 time_start = time.time() 
