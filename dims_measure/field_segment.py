@@ -17,7 +17,7 @@ pcd.points = o3d.utility.Vector3dVector(points)
 # o3d.visualization.draw_geometries([pcd]) 
 
 # table plane 
-plane_model, inliers = pcd.segment_plane(distance_threshold=0.01, ransac_n=3, num_iterations=10000)
+plane_model, inliers = pcd.segment_plane(distance_threshold=0.01, ransac_n=3, num_iterations=1000)
 [a, b, c, d1] = plane_model
 print(f"Plane equation: {a:.2f}x + {b:.2f}y + {c:.2f}z + {d1:.3f} = 0")
 table_pcd = pcd.select_by_index(inliers)
@@ -26,7 +26,7 @@ table_pcd.paint_uniform_color([1.0, 0, 0])
 other_pcd = pcd.select_by_index(inliers, invert=True)
 
 # box plane 
-plane_model, inliers = other_pcd.segment_plane(distance_threshold=0.015, ransac_n=3, num_iterations=10000)
+plane_model, inliers = other_pcd.segment_plane(distance_threshold=0.015, ransac_n=3, num_iterations=1000)
 [a, b, c, d2] = plane_model
 print(f"Plane equation: {a:.2f}x + {b:.2f}y + {c:.2f}z + {d2:.3f} = 0")
 
