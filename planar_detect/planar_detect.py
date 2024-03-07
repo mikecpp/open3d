@@ -32,4 +32,12 @@ print(f"width: {width:.0f} mm, length: {length:.0f} mm, height: {height:.0f} mm"
 print(f"time elapse: {(time_end - time_start)*1000:.0f} ms")
 print("-----------------------------------------------")
 
-# o3d.visualization.draw_geometries([oboxes[0], oboxes[1]]) 
+geometries = []
+for obox in oboxes:
+    mesh = o3d.geometry.TriangleMesh.create_from_oriented_bounding_box(obox, scale=[1, 1, 1])
+    mesh.paint_uniform_color(obox.color)
+    # geometries.append(mesh)
+    geometries.append(obox)
+# geometries.append(pcd)
+
+o3d.visualization.draw_geometries(geometries)
